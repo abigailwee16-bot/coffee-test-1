@@ -2,34 +2,50 @@ import React, { useEffect } from 'react';
 
 export const DisqusForum: React.FC = () => {
   useEffect(() => {
-    // Inject Disqus comment embed script
-    const embedScriptId = 'disqus-embed-script';
-    if (!document.getElementById(embedScriptId)) {
-      const d = document;
-      const s = d.createElement('script');
-      s.id = embedScriptId;
-      s.src = 'https://abs-smu.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', String(+new Date()));
-      (d.head || d.body).appendChild(s);
-    } else if ((window as any).DISQUS) {
-      // Re-initialize Disqus if it already loaded
-      (window as any).DISQUS.reset({
-        reload: true,
-        config: function () {
-          this.page.url = window.location.href;
-          this.page.identifier = window.location.pathname;
-        }
-      });
-    }
+    try {
+      // Define global Disqus config
+      (window as any).disqus_config = function (this: any) {
+        this.page.url = window.location.href;
+        this.page.identifier = window.location.pathname;
+      };
 
-    // Inject Disqus comment count script
-    const countScriptId = 'dsq-count-scr';
-    if (!document.getElementById(countScriptId)) {
-      const s = document.createElement('script');
-      s.id = countScriptId;
-      s.src = '//abs-smu.disqus.com/count.js';
-      s.async = true;
-      (document.head || document.body).appendChild(s);
+      // Inject Disqus comment embed script
+      const embedScriptId = 'disqus-embed-script';
+      if (!document.getElementById(embedScriptId)) {
+        const d = document;
+        const s = d.createElement('script');
+        s.id = embedScriptId;
+        s.src = 'https://abs-smu.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', String(+new Date()));
+        s.onerror = (e) => {
+          console.warn('Disqus script loading error:', e);
+        };
+        (d.head || d.body).appendChild(s);
+      } else if ((window as any).DISQUS) {
+        // Re-initialize Disqus if it already loaded
+        (window as any).DISQUS.reset({
+          reload: true,
+          config: function (this: any) {
+            this.page.url = window.location.href;
+            this.page.identifier = window.location.pathname;
+          }
+        });
+      }
+
+      // Inject Disqus comment count script
+      const countScriptId = 'dsq-count-scr';
+      if (!document.getElementById(countScriptId)) {
+        const s = document.createElement('script');
+        s.id = countScriptId;
+        s.src = 'https://abs-smu.disqus.com/count.js';
+        s.async = true;
+        s.onerror = (e) => {
+          console.warn('Disqus count script loading error:', e);
+        };
+        (document.head || document.body).appendChild(s);
+      }
+    } catch (err) {
+      console.warn('Error initializing Disqus:', err);
     }
   }, []);
 
