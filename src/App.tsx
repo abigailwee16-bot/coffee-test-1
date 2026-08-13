@@ -6,6 +6,7 @@ import { FeaturedProducts } from './components/FeaturedProducts';
 import { PickupSection } from './components/PickupSection';
 import { CoffeeGuideSection } from './components/CoffeeGuideSection';
 import { ValuePropsSection } from './components/ValuePropsSection';
+import { DisqusForum } from './components/DisqusForum';
 import { Footer } from './components/Footer';
 
 import { CartDrawer } from './components/CartDrawer';
@@ -215,6 +216,9 @@ export default function App() {
 
         {/* Value Props & Shipping Schedule */}
         <ValuePropsSection />
+
+        {/* Discussion Forum (Disqus) */}
+        <DisqusForum />
       </main>
 
       {/* Footer */}
